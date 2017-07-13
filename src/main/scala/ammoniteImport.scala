@@ -5,8 +5,7 @@ import ammonite.ops.ImplicitWd._
 object ammoniteImport{
   def main( args: Array[String] ): Unit = {
     val workingDirectory = pwd.toString()
-    val withinDirectory = %ls.toString()
-
-    println("You are in " + workingDirectory + " and it's contents are " + withinDirectory)
+    println("You are in " + workingDirectory + " and it's contents are:")
+    %ls
   }
 }
