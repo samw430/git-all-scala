@@ -114,3 +114,4 @@ scala-2.11/
 .idea/
 project/*
 git-all-scala.iml
+*/target/*
