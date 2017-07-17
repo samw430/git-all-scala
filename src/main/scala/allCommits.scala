@@ -23,7 +23,7 @@ object allCommits{
       var indexPosition = logString.indexOf("commit ")
       var hash = logString.substring( indexPosition + 7 , indexPosition + 47 )
       logListBuffer.append(hash)
-      logString = logString.substring(indexPosition + 6 )
+      logString = logString.substring(indexPosition + 60 )
 
     }
 
