@@ -1,22 +1,32 @@
 import ammonite.ops._
 import ammonite.ops.ImplicitWd._
 import scala.collection.mutable.ListBuffer
+import scala.io.StdIn.readLine
 
 object allCommits{
   def main( args: Array[String] ): Unit = {
-    %('rm,"-rf","hello-world")(home)
-    val sourcePath = home/"hello-world"
+    val repoURL = readLine("URL of Repo to Clone: ")
+    val sourceFolder = readLine("Name of Repo to be cloned (Must be accurate): ")
+    val destinationFolder = readLine("Desired Name for Destination Folder: ")
 
-    %.git("clone","https://github.com/samw430/hello-world.git")(home)
-    println("Clone success")
+    val sourcePath = home/"Desktop"/sourceFolder
+    val destinationPath = home/"Desktop"/destinationFolder
 
-    val logForIterator = hashCodes("hey")
+    if( exists! sourcePath ) {
+      println("Source folder already exists cannot execute program")
+      System.exit(0)
+    }
+    if ( exists! destinationPath ){
+      println("Destination folder already exists cannot execute program")
+      System.exit(0)
+    }
 
-    %('rm,"-rf","Desktop/All-Commits")(home)
-    mkdir! home/"Desktop"/"All-Commits"
-    val destinationPath = home/"Desktop"/"All-Commits"
+    %.git("clone",repoURL)(home/"Desktop")
 
+    val logForIterator = hashCodes(sourceFolder)
     val logIterator = logForIterator.toIterator
+
+    mkdir! home/"Desktop"/destinationFolder
 
     while( logIterator.hasNext ){
       var currentHash = logIterator.next
@@ -30,7 +40,7 @@ object allCommits{
     }
   }
   def hashCodes( args: String ): ListBuffer[String] = {
-    val source = home/"hello-world"
+    val source = home/args
     val log = %%("git","log")(source)
     var logString = log.toString
 
