@@ -40,7 +40,7 @@ object allCommits{
     }
   }
   def hashCodes( args: String ): ListBuffer[String] = {
-    val source = home/args
+    val source = home/"Desktop"/args
     val log = %%("git","log")(source)
     var logString = log.toString
 
