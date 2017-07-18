@@ -10,7 +10,28 @@ object allCommits{
     %.git("clone","https://github.com/samw430/hello-world.git")(home)
     println("Clone success")
 
-    val log = %%("git","log")(sourcePath)
+    val logForIterator = hashCodes("hey")
+
+    %('rm,"-rf","Desktop/All-Commits")(home)
+    mkdir! home/"Desktop"/"All-Commits"
+    val destinationPath = home/"Desktop"/"All-Commits"
+
+    val logIterator = logForIterator.toIterator
+
+    while( logIterator.hasNext ){
+      var currentHash = logIterator.next
+
+      mkdir! destinationPath/currentHash
+      var currentPath = destinationPath/currentHash
+      %.git('init)(currentPath)
+      %%("git","remote","add","upstream",sourcePath)(currentPath)
+      %%("git","fetch", "upstream")(currentPath)
+      %%("git","checkout",currentHash)(currentPath)
+    }
+  }
+  def hashCodes( args: String ): ListBuffer[String] = {
+    val source = home/"hello-world"
+    val log = %%("git","log")(source)
     var logString = log.toString
 
     println( logString )
@@ -28,23 +49,7 @@ object allCommits{
     }
 
     print( logListBuffer )
-
-    %('rm,"-rf","Desktop/All-Commits")(home)
-    mkdir! home/"Desktop"/"All-Commits"
-    val destinationPath = home/"Desktop"/"All-Commits"
-
-    val logIterator = logListBuffer.toIterator
-
-    while( logIterator.hasNext ){
-      var currentHash = logIterator.next
-
-      mkdir! destinationPath/currentHash
-      var currentPath = destinationPath/currentHash
-      %.git('init)(currentPath)
-      %%("git","remote","add","upstream",sourcePath)(currentPath)
-      %%("git","fetch", "upstream")(currentPath)
-      %%("git","checkout",currentHash)(currentPath)
-    }
+    return logListBuffer
   }
 }
 
