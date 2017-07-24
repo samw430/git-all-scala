@@ -35,15 +35,13 @@ object allCommits{
     mkdir! home/"Desktop"/destinationFolder
 
     //This loop creates a new folder for each commit and fills it with the files that were current as of that commit
-    while( logIterator.hasNext ){
-      var currentHash = logIterator.next
-
-      mkdir! destinationPath/currentHash
-      var currentPath = destinationPath/currentHash
+    for ( currentHash <- logIterator ) {
+      mkdir ! destinationPath / currentHash
+      var currentPath = destinationPath / currentHash
       %.git('init)(currentPath)
-      %%("git","remote","add","upstream",sourcePath)(currentPath)
-      %%("git","fetch", "upstream")(currentPath)
-      %%("git","checkout",currentHash)(currentPath)
+      %%("git", "remote", "add", "upstream", sourcePath)(currentPath)
+      %%("git", "fetch", "upstream")(currentPath)
+      %%("git", "checkout", currentHash)(currentPath)
     }
   }
   //This method takes the name of the folder where the repo is cloned and returns the hash codes
