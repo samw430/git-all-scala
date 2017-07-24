@@ -47,24 +47,14 @@ object allCommits{
     }
   }
   //This method takes the name of the folder where the repo is cloned and returns the hash codes
-  def hashCodes( args: String ): ListBuffer[String] = {
+  def hashCodes( args: String ): Array[String] = {
     val source = home/"Desktop"/args
     val log = %%("git","log")(source)
-    var logString = log.toString
+    val logString = log.toString
+    val logArray = logString.split("\n")
+    val justHashCodes = logArray filter { line => line.startsWith("commit") } map { line => line.split(" ")(1) }
 
-    println( logString )
-
-    val logListBuffer = new ListBuffer[String]()
-
-    println("logString Complete")
-
-    while( logString.contains("Author:")){
-      var indexPosition = logString.indexOf("commit ")
-      var hash = logString.substring( indexPosition + 7 , indexPosition + 47 )
-      logListBuffer.append(hash)
-      logString = logString.substring(indexPosition + 60 )
-    }
-    return logListBuffer
+    return justHashCodes
   }
 }
 
