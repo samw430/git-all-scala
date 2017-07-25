@@ -2,13 +2,15 @@ import ammonite.ops._
 import ammonite.ops.ImplicitWd._
 import scala.collection.mutable.ListBuffer
 import scala.io.StdIn.readLine
+import scopt.OptionParser
 
 object allCommits{
   def main( args: Array[String] ): Unit = {
     //Gets information about repo so that all commits can be cloned
-    val repoURL = readLine("URL of Repo to Clone: ")
-    val sourceFolder = readLine("Name of Repo to be cloned (Must be accurate): ")
-    val destinationFolder = readLine("Desired Name for Destination Folder: ")
+    val config = parseCommandLine(args).getOrElse(Config())
+    val repoURL = config.url.toString
+    val sourceFolder = config.src.toString
+    val destinationFolder = config.dst.toString
 
     //Establishes path for source folder where clone occurs and destination folder which will recieve every commit
     val sourcePath = home/"Desktop"/sourceFolder
@@ -54,6 +56,27 @@ object allCommits{
 
     return justHashCodes
   }
+  case class Config(
+                     src: String = "None",
+                     dst: String = "None",
+                     url: String = "None"
+                   )
+  def parseCommandLine(args: Array[String]): Option[Config] = {
+    val parser = new scopt.OptionParser[Config]("scopt") {
+      head("allCommits", "1.0")
+      opt[String]('s', "src") action { (x, c) =>
+        c.copy(src = x)
+      } text ("s/src is a String property")
+      opt[String]('d', "dst") action { (x, c) =>
+        c.copy(dst = x)
+      } text ("d/dst is a String property")
+      opt[String]('u',"url") action { (x, c) =>
+        c.copy(url = x)
+      } text ("u/url is a String property")
+    }
+    parser.parse(args, Config())
+  }
 }
+
 
 

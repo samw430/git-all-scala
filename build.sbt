@@ -1,4 +1,4 @@
-name := "csv-demo-scala"
+name := "allCommits"
 
 version := "1.0"
 
