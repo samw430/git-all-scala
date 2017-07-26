@@ -10,13 +10,12 @@ object allCommits {
     val config = parseCommandLine(args).getOrElse(Config())
 
     val repoURL = config.url.getOrElse("")
-    println(repoURL)
     val sourceFolder = config.src.getOrElse("")
     val destinationFolder = config.dst.getOrElse("")
 
     //Establishes path for source folder where clone occurs and destination folder which will recieve every commit
-    val sourcePath = home / "Desktop" / sourceFolder
-    val destinationPath = home / "Desktop" / destinationFolder
+    val sourcePath = root / "Users" / "sam" / "Desktop" / sourceFolder
+    val destinationPath = root / "Users" / "sam" / "Desktop" / destinationFolder
 
     //Checks whether these two folders already exist and if so exits the program and alerts the user
     if (exists ! sourcePath) {
@@ -29,7 +28,7 @@ object allCommits {
     }
 
     //Clones repo into source folder
-    %.git("clone", repoURL)(home / "Desktop")
+    %.git("clone", repoURL)( root / "Users" / "sam" / "Desktop")
 
     //Gets the hashs for each commit and prepares them as an iterator
     val logForIterator = hashCodes(sourceFolder)
