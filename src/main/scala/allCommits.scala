@@ -12,6 +12,8 @@ object allCommits {
     val repoURL = config.url.getOrElse("")
     val sourceFolder = config.src.getOrElse("")
     val destinationFolder = config.dst.getOrElse("")
+    val startHash = config.start.getOrElse(0)
+    val stride = config.stride.getOrElse(1)
 
     //Establishes path for source folder where clone occurs and destination folder which will recieve every commit
     val sourcePath = root / "Users" / "sam" / "Desktop" / sourceFolder
@@ -31,8 +33,9 @@ object allCommits {
     %.git("clone", repoURL)( root / "Users" / "sam" / "Desktop")
 
     //Gets the hashs for each commit and prepares them as an iterator
-    val logForIterator = hashCodes(sourceFolder)
-    val logIterator = logForIterator.toIterator
+    val logForList = hashCodes(sourceFolder).toList
+    val currentNodeHashes = for (i <- (startHash to logForList.size - 1 by stride).toList) yield logForList(i)
+    val logIterator = currentNodeHashes.toIterator
 
     //Creates folder where all commits will be placed as subfolders
     mkdir ! home / "Desktop" / destinationFolder
@@ -71,6 +74,10 @@ object allCommits {
       opt[String]('u', "url") action { (x, c) =>
         c.copy(url = Some(x))
       } text ("u/url is a String property")
+      opt[Int]("stride") action { (x, c) => c.copy(stride = Some(x))
+      } text ("stride is an Int property")
+      opt[Int]("start") action { (x, c) => c.copy(start = Some(x))
+      } text ("start is an Int property")
     }
     parser.parse(args, Config())
   }
@@ -78,7 +85,9 @@ object allCommits {
   case class Config(
                      src: Option[String] = None,
                      dst: Option[String] = None,
-                     url: Option[String] = None
+                     url: Option[String] = None,
+                     start: Option[Int] = None,
+                     stride: Option[Int] = None
                    )
 
 }
