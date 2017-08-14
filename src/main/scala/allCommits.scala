@@ -16,8 +16,8 @@ object allCommits {
     val stride = config.stride.getOrElse(1)
 
     //Establishes path for source folder where clone occurs and destination folder which will recieve every commit
-    val sourcePath = root / "Users" / "sam" / "Desktop" / sourceFolder
-    val destinationPath = root / "Users" / "sam" / "Desktop" / destinationFolder
+    val sourcePath = root / sourceFolder
+    val destinationPath = root / destinationFolder
 
     //Checks whether these two folders already exist and if so exits the program and alerts the user
     if (exists ! sourcePath) {
@@ -30,7 +30,7 @@ object allCommits {
     }
 
     //Clones repo into source folder
-    %.git("clone", repoURL)( root / "Users" / "sam" / "Desktop")
+    %.git("clone", repoURL)( root / sourceFolder)
 
     //Gets the hashs for each commit and prepares them as an iterator
     val logForList = hashCodes(sourceFolder).toList
@@ -38,7 +38,7 @@ object allCommits {
     val logIterator = currentNodeHashes.toIterator
 
     //Creates folder where all commits will be placed as subfolders
-    mkdir ! home / "Desktop" / destinationFolder
+    mkdir ! root / destinationFolder
 
     //This loop creates a new folder for each commit and fills it with the files that were current as of that commit
     for (currentHash <- logIterator) {
@@ -55,7 +55,7 @@ object allCommits {
 
   //This method takes the name of the folder where the repo is cloned and returns the hash codes
   def hashCodes(args: String): Array[String] = {
-    val source = home / "Desktop" / args
+    val source = root / args
     val log = %%("git", "log")(source)
     val logString = log.toString
     val logArray = logString.split("\n")
